@@ -10,8 +10,6 @@ class UserView(APIView):
         data = request.data
         name = data.get('name')
         score = data.get('score')
-        # name = request.POST.get('name')
-        # score = request.POST.get('score')
 
         team = get_object_or_404(Team, name=name)
         team.total_score += int(score)
@@ -29,12 +27,6 @@ class UserView(APIView):
         #     ]
         #     return Response(output)
 
-        # def post(self, request):
-        #     serializer = UserSerializer(data=request.data)
-        #     if serializer.is_valid(raise_exception=True):
-        #         serializer.save()
-        #         return Response(serializer.data)
-
 
 class TeamView(APIView):
     def get(self, request):
@@ -46,7 +38,6 @@ class TeamView(APIView):
             } for output in Team.objects.all()
         ]
         return Response(output)
-
 
 # def get_or_create_user(request):
 #     session_key = request.session.session_key
