@@ -1,8 +1,10 @@
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
-from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Team
+from rest_framework.views import APIView
+
+from .db import SQLiteDB
+
+Database = SQLiteDB("db.sqlite3")
 
 
 class UserView(APIView):
@@ -11,50 +13,23 @@ class UserView(APIView):
         name = data.get('name')
         score = data.get('score')
 
-        team = get_object_or_404(Team, name=name)
-        team.total_score += int(score)
-        team.save()
+        total_score = Database.get_team_score(name)
+        Database.update_team_total_score(name, int(score)+int(total_score))
 
         return HttpResponse(status=200)
-
-        # def get(self, request):
-        #     output = [
-        #         {
-        #             'session_key': output.session_key,
-        #             'score': output.score,
-        #             'team_id': output.score
-        #         } for output in User.objects.all()
-        #     ]
-        #     return Response(output)
 
 
 class TeamView(APIView):
     def get(self, request):
-        output = [
-            {
-                'id': output.id,
-                'name': output.name,
-                'total_score': output.total_score
-            } for output in Team.objects.all()
-        ]
-        return Response(output)
+        output = []
 
-# def get_or_create_user(request):
-#     session_key = request.session.session_key
-#     # team = Team.objects.get(id_team=1)  # зрабіць функцыянал выбару каманды
-#     if not session_key:
-#         request.session.save()
-#         session_key = request.session.session_key
-#         user = User.objects.create(session_key=session_key, score=300, team_id=3)
-#     else:
-#         user = User.objects.get(session_key=session_key)
-#
-#     return user
-#
-#
-# def login(request):  # дзе будзе запускацца функцыя get_or_create_user калі мы выдалім login
-#     # user = get_or_create_user(request)
-#     user = User.objects.get(session_key='wayv5mujwo2egyyot748euxo7hads519')
-#     user.score = 440
-#     user.save()
-#     return render(request, 'game/login.html', {'user': user})
+        teams = Database.get_teams()
+
+        for team_data in teams:
+            output.append({
+                'id': team_data[0],
+                'name': team_data[1],
+                'total_score': team_data[2]
+            })
+
+        return Response(output)

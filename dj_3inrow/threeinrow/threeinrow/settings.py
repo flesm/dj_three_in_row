@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-cl7mxrpaw=_1t08_sops%_1e+9)3(37p&o9iuj93tp7or2*(zq
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # Application definition
 
@@ -84,10 +84,8 @@ WSGI_APPLICATION = 'threeinrow.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ThreeInRow',
-        'USER': 'player',
-        'PASSWORD': 'ViNEA3AcVb',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
